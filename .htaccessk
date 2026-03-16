@@ -1,0 +1,18 @@
+# Enable Rewrite Engine
+RewriteEngine On
+
+# Remove .php extension
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^(.*)$ $1.php [L]
+
+# Custom error page
+ErrorDocument 404 /colleen-adventures/404.php
+
+# Compress files
+AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript
+
+# Cache static files
+<FilesMatch "\.(css|js|jpg|jpeg|png|gif|ico)$">
+    Header set Cache-Control "max-age=2592000, public"
+</FilesMatch>
