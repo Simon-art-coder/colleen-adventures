@@ -1,7 +1,16 @@
 <?php
-// Turn on error reporting for development
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// Only enable verbose error output for local development.
+$local_client = $_SERVER['REMOTE_ADDR'] ?? '';
+$allow_debug_errors = in_array($local_client, ['127.0.0.1', '::1'], true)
+    || (isset($_SERVER['HTTP_HOST']) && stripos($_SERVER['HTTP_HOST'], 'localhost') !== false);
+
+if ($allow_debug_errors) {
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+} else {
+    error_reporting(0);
+    ini_set('display_errors', 0);
+}
 
 // Start session
 if (session_status() === PHP_SESSION_NONE) {
@@ -23,7 +32,8 @@ $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
 // Check connection
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    error_log('Database connection failed: ' . $conn->connect_error);
+    die('Database unavailable.');
 }
 
 // Set charset
