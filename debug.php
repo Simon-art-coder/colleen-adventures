@@ -1,5 +1,14 @@
 <?php
 // debug.php - Place in root folder
+$remote_ip = $_SERVER['REMOTE_ADDR'] ?? '';
+$allowed_debug = (in_array($remote_ip, ['127.0.0.1', '::1'], true) || (isset($_SERVER['HTTP_HOST']) && stripos($_SERVER['HTTP_HOST'], 'localhost') !== false))
+    && (!empty($_GET['debug']) && $_GET['debug'] === 'enable');
+
+if (!$allowed_debug) {
+    http_response_code(404);
+    exit('Not Found');
+}
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
